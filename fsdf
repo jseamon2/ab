@@ -1,0 +1,250 @@
+**
+*NODE, NSET=BOLT_PRESS_PLATE_RP
+ 600001,   11.5007496,   47.5300369
+*NODE, NSET=BOLT_TORQUE_PLATE_RP
+ 600002,   11.5007496,   48.0725784
+**
+*ELEMENT, TYPE=CONN2D2, ELSET=BOLT_CONN
+90001, 600001, 600002
+**
+
+*******************************************************************************
+**                                 GRAND                                     **
+*******************************************************************************
+**
+** MODEL INFORMATION
+** PROGRAM: GRAND
+** MODEL:  STRUCTURAL ANALYSIS - PRESSURE 2.0
+** GEOMETRY:  TD1016100-01_0_NOZZLE ASSEMBLY
+** ANALYST: JOSEPH SEAMONS
+**										
+**------------------------------------------------------------------
+**  						USER INPUT / PARAMETERS
+**------------------------------------------------------------------
+**
+*INCLUDE, INPUT = 'GRAND_ThermalStructural_Parameters.inp'
+**
+*PARAMETER
+**
+** ============ BOLT PRELOAD INPUTS ============
+** Bolt: 0.875-9 UNC (tapped holes in torque plate, 2B)
+** N_BOLTS - number of bolts
+** F_PER - per-bolt preload, lbf 27430.  
+** D_NOM - nominal diameter, in
+** TPI - threads per inch
+** E_BOLT - bolt modulus, psi (steel)
+** L_GRIP - plate-to-plate span, in
+** R_BC - bolt circle radius, in
+** Z_HEAD - torque-plate attachment z, in
+** Z_TIP - pressure-plate bearing z, in
+N_BOLTS   = 30
+F_PER     = 20.           
+D_NOM     = 0.875             
+TPI       = 9.                
+E_BOLT    = 30.0e6            
+L_GRIP    = 0.5426            
+** R_BC      = <r_boltcircle>    
+** Z_HEAD    = <z_upper>         
+** Z_TIP     = <z_lower>         
+**
+** ============ DERIVED ============
+** A_T - tensile stress area
+** K_PER - per-bolt stiffness
+** K_CONN - smeared connector stiffness
+** F_TOTAL - total ring preload
+** F_PRELOAD - signed CLOAD value (flip if needed)
+A_T       = 0.7854*(D_NOM - 0.9743/TPI)**2     
+K_PER     = E_BOLT*A_T/L_GRIP                  
+K_CONN    = N_BOLTS*K_PER                     
+F_TOTAL   = N_BOLTS*F_PER                      
+F_PRELOAD = -F_TOTAL                           
+**
+*PARAMETER
+Net_Effect_File="GRAND_net_effect_v0.mdat"
+USER_MAT_FILE="GRAND_FAILSAFE_v0.umf"
+**
+*PARAMETER
+INITIAL_TEMPERATURE = 70.0
+PRESSURE_MAGNITUDE = 10.0
+**
+P_HEADING_NAME = 'PRESSURE TESTING'
+**
+** MATERIALS
+P_MAT_ASFEPDM = P_HOT_T1_ASFEPDM
+P_MAT_SFEPDM = P_HOT_T1_SFEPDM
+P_MAT_CORK = P_HOT_T1_CORK
+P_MAT_3DCC = P_3DCC
+**
+**-----------------------------------------------------------
+**		INCLUDES
+**-----------------------------------------------------------
+**
+*INCLUDE, INPUT = 'GRAND_ThermalStructural_Hot_T0_Model.inp'
+*INCLUDE, INPUT = 'GRAND_ThermalStructural_ModelConstants.inp'
+**
+**
+**------------------------------------------------------------------
+**	                       MATERIAL DEFINITIONS
+**------------------------------------------------------------------
+**
+*INCLUDE, INPUT  = 'GRAND_Material_Models_v0.inp'
+**
+**-----------------------------------------------------------
+**		SOLID SECTIONS
+**-----------------------------------------------------------
+**
+**------------------------------------------------------------------
+**                         SOLID SECTION DEFINITIONS NE_ENKA_CCP
+**------------------------------------------------------------------
+** 
+*SOLID SECTION, ELSET=SHELL, 					MATERIAL=STEEL_4340, 				ORIENTATION=OriDist
+**
+*SOLID SECTION, ELSET=DOME_INSULATOR1, 			MATERIAL=<P_MAT_ASFEPDM>, 			ORIENTATION=OriDist
+*SOLID SECTION, ELSET=DOME_INSULATOR2, 			MATERIAL=<P_MAT_ASFEPDM>, 			ORIENTATION=OriDist
+**
+*SOLID SECTION, ELSET=AFT_INSULATOR,      		MATERIAL=NE_ENKA_CCP, 				ORIENTATION=O_AFT_INSULATOR_2D
+*SOLID SECTION, ELSET=THROAT_SUPPORT_INSULATOR, MATERIAL=ENKA_CCP_BIAS_COMP, 		ORIENTATION=O_TSI_2D
+** *SOLID SECTION, ELSET=EXIT_CONE_LINER, 			MATERIAL=NE_ENKA_CCP,				ORIENTATION=O_EXITCONE_2D
+**
+*SOLID SECTION, ELSET=SHEAR_PLY, 				MATERIAL=<P_MAT_SFEPDM>, 			ORIENTATION=OriDist
+**
+*SOLID SECTION, ELSET=ITE, 						MATERIAL=<P_MAT_3DCC>, 				ORIENTATION=O_ITE_2D
+**
+** *SOLID SECTION, ELSET=EXIT_CONE_OVERWRAP, 		MATERIAL=GRAPHITE_EPOXY, 			ORIENTATION=OriDist
+** *SOLID SECTION, ELSET=OVERWRAP_BOND, 			MATERIAL=GRAPHITE_EPOXY, 			ORIENTATION=OriDist
+**
+*SOLID SECTION, ELSET=AFT_INSULATOR_BOND, 		MATERIAL=TIGA321_EPDM_POSTCURE, ORIENTATION=OriDist
+*SOLID SECTION, ELSET=TSI_BOND, 				MATERIAL=TIGA321_EPDM_POSTCURE, ORIENTATION=OriDist
+** *SOLID SECTION, ELSET=EXIT_CONE_LINER_BOND1, 	MATERIAL=TIGA321_105F_POSTCURE, ORIENTATION=OriDist
+** *SOLID SECTION, ELSET=EXIT_CONE_LINER_BOND2, 	MATERIAL=TIGA321_105F_POSTCURE, ORIENTATION=OriDist
+**
+*SOLID SECTION, ELSET=AI_TSI_BOND, 				MATERIAL=TIGA321_EPDM_POSTCURE,      ORIENTATION=OriDist
+** *SOLID SECTION, ELSET=TSI_EXITCONE_BOND, 		MATERIAL=TIGA321_105F_POSTCURE,      ORIENTATION=OriDist
+*SOLID SECTION, ELSET=ITE_BOND, 				MATERIAL=FS_TIGA321_EPDM_POSTCURE,   ORIENTATION=OriDist
+**
+** *SOLID SECTION, ELSET=CORK, 					MATERIAL=<P_MAT_CORK>, 				 ORIENTATION=OriDist
+** *SOLID SECTION, ELSET=CORK_BOND, 				MATERIAL=EA9392, 					 ORIENTATION=OriDist
+**
+*SOLID SECTION, ELSET=TOOLING, 					MATERIAL=A36_Steel, 				 ORIENTATION=OriDist
+**
+*CONNECTOR SECTION, ELSET=BOLT_CONN, BEHAVIOR=BOLT_BEH
+ Axial,
+**
+** *DIAGNOSTICS, NONHYBRID INCOMPRESSIBLE=WARNING
+**
+**------------------------------------------------------------------
+**							ITE CONTACT DEFINITION
+**------------------------------------------------------------------
+**
+**CONTACT PAIR, INTERACTION=FRICTIONLESS, TYPE=SURFACE TO SURFACE, ADJUST=0.001
+*TIE, name=ITE_TIE
+ ITEBOND, ITE
+**
+** **------------------------------------------------------------------
+** **							SHELL-TOOL DEFINITION
+** **------------------------------------------------------------------
+**
+*Surface Interaction, Name=Tool-Shell-Interaction
+**
+*Surface Behavior, Pressure-Overclosure=Hard
+**
+*Friction
+ 0.2,
+**
+*Contact Pair, Interaction=Tool-Shell-Interaction, Adjust=0.000000, Small Sliding
+ SHELL_TOOLING_CONTACT, TOOLING_SHELL_CONTACT
+**
+** *TIE, name=SHELL_TOOL, ADJUST=NO
+**  SHELL_TOOLING_CONTACT, TOOLING_SHELL_CONTACT
+**
+**------------------------------------------------------------------
+**							BOLT SURFACE COUPLING
+**------------------------------------------------------------------
+**
+*COUPLING, CONSTRAINT NAME=BOLT_TORQUE_PLATE, REF NODE=BOLT_TORQUE_PLATE_RP, SURFACE=SURF_TORQUE_PLATE
+*DISTRIBUTING
+*COUPLING, CONSTRAINT NAME=BOLT_PRESS_PLATE, REF NODE=BOLT_PRESS_PLATE_RP, SURFACE=SURF_PRESS_PLATE
+*DISTRIBUTING
+**
+**------------------------------------------------------------------
+**							BOLT BEHAVIOR
+**------------------------------------------------------------------
+**
+*CONNECTOR BEHAVIOR, NAME=BOLT_BEH
+*CONNECTOR ELASTICITY, COMPONENT=1
+<K_CONN>
+**
+**-----------------------------------------------------------
+**		INITIAL CONDITIONS
+**-----------------------------------------------------------
+**
+**INITIAL MODEL TEMPERATURE
+*INITIAL CONDITIONS, TYPE = TEMPERATURE
+ NALL, <INITIAL_TEMPERATURE>
+**
+*INITIAL CONDITIONS, TYPE=FIELD, VARIABLE=2 
+ NALL, <INITIAL_TEMPERATURE>
+**
+*INITIAL CONDITIONS, TYPE=FIELD, VARIABLE=1
+ NALL, <INITIAL_TEMPERATURE>
+**
+**-----------------------------------------------------------
+**		BOUNDARY CONDITIONS          
+**-----------------------------------------------------------
+**
+*BOUNDARY
+BC_NODES, 1, 2
+**
+** **---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+** **		PRESSURE LOAD STEP
+** **---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+** *STEP, NAME = "<P_HEADING_NAME>", NLGEOM = NO, Unsymm=yes
+** *STATIC
+**  1.0, 1.0, 1e-8, 1.0
+** ** Set temperature to constant, 70F
+**  *TEMPERATURE
+**  NALL, <INITIAL_TEMPERATURE>
+** ** Apply pressure
+** *DSLOAD
+**  PRESS_NOZZLE, P, <PRESSURE_MAGNITUDE>
+** ** Apply pressure to tool
+** *DSLOAD
+**  PRESS_TOOL, P, <PRESSURE_MAGNITUDE>
+** **
+** **-----------------------------------------------------------
+** **		OUTPUT DEFINITION          
+** **-----------------------------------------------------------
+** **
+** *NODE PRINT, NSET = BC_NODES, GLOBAL=YES, TOTAL=YES
+**  RF
+** **
+** *OUTPUT, FIELD, NUMBER INTERVAL = 1
+** *NODE OUTPUT
+** U,RF,NT
+** *ELEMENT OUTPUT
+** S,E,PRESS,THE,TEMP,P,EE,NFORC,PEEQ
+** *CONTACT OUTPUT
+** CSTRESS, CDISP
+** **
+** **-----------------------------------------------------------
+** **		END STEP 
+** **-----------------------------------------------------------
+** **
+** *END STEP 
+**
+**---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+**		PRE-LOAD STEP
+**---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*STEP, NAME = "Pre-Load", NLGEOM = YES
+ 0.01, 1.0, 1e-8, 1.0
+**
+*CLOAD
+ BOLT_CONN, 1, <F_PRELOAD>
+**
+*OUTPUT, FIELD
+*ELEMENT OUTPUT, ELSET=BOLT_CONN
+ CTF, CU
+*CONTACT OUTPUT
+ CPRESS, COPEN
+*OUTPUT, FIELD, VARIABLE-PRESELECT
+*END STEP
