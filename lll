@@ -1,0 +1,10 @@
+*Surface Interaction, Name=Tool-Shell-Interaction
+**
+*Surface Behavior, Pressure-Overclosure=Hard
+**
+*Friction,TauMax=0.000000
+0.000000, 0.000000, 0.000000
+**
+*Contact Pair, Interaction=Tool-Shell-Interaction, Adjust=0.000000, Small Sliding
+ SHELL_TOOLING_CONTACT, TOOLING_SHELL_CONTACT
+**
