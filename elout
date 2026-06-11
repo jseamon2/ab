@@ -1,0 +1,41 @@
+
+
+                                    E L E M E N T   P R I N T
+
+
+
+
+   THE FOLLOWING TABLE IS PRINTED EVERY 1 INCREMENTS FOR ELEMENT TYPE CONN2D2 AND ELEMENT SET 
+   BOLT_CONN
+
+     SUMMARIES WILL BE PRINTED WHERE APPLICABLE
+
+          TABLE   1  CTF1        CTF2        CTM3        
+
+
+
+
+
+                               C O N N E C T O R   L O A D S
+
+
+        ELEMENT  COMPONENT AMP.    MAGNITUDE         ELEMENT  COMPONENT AMP.    MAGNITUDE         ELEMENT  COMPONENT AMP.    MAGNITUDE
+                          REF.                                        REF.                                        REF.
+
+         90001     1              -600.00    
+
+
+
+
+                              B O U N D A R Y   C O N D I T I O N S
+
+
+      NODE      DOF     AMP.    MAGNITUDE                 NODE      DOF     AMP.    MAGNITUDE
+                        REF.                                                REF.
+
+       52943    1     (RAMP)     0.0000                    52943    2     (RAMP)     0.0000               
+       53010    1     (RAMP)     0.0000                    53010    2     (RAMP)     0.0000               
+
+     - (RAMP) OR (STEP) - INDICATE USE OF DEFAULT AMPLITUDES ASSOCIATED WITH THE STEP
+
+
