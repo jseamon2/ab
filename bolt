@@ -1,0 +1,20 @@
+*PARAMETER
+**
+** ============ BOLT PRELOAD INPUTS ============
+** Bolt: 0.875-9 UNC (tapped holes in torque plate, 2B)
+N_BOLTS   = 30
+F_PER     = 27430.            ** per-bolt preload, lbf
+D_NOM     = 0.875             ** nominal diameter, in
+TPI       = 9.                ** threads per inch
+E_BOLT    = 30.0e6            ** bolt modulus, psi (steel)
+L_GRIP    = 0.5426            ** plate-to-plate span, in
+R_BC      = <r_boltcircle>    ** bolt circle radius, in
+Z_HEAD    = <z_upper>         ** torque-plate attachment z, in
+Z_TIP     = <z_lower>         ** pressure-plate bearing z, in
+**
+** ============ DERIVED ============
+A_T       = 0.7854*(D_NOM - 0.9743/TPI)**2     ** tensile stress area
+K_PER     = E_BOLT*A_T/L_GRIP                  ** per-bolt stiffness
+K_CONN    = N_BOLTS*K_PER                      ** smeared connector stiffness
+F_TOTAL   = N_BOLTS*F_PER                      ** total ring preload
+F_PRELOAD = -F_TOTAL                           ** signed CLOAD value (flip if needed)
